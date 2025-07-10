@@ -1,0 +1,17 @@
+# OS files
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Environment
+.env
+RagX/
+venv/
+
+# Notebooks
+*.ipynb_checkpoints/
+
+# VSCode settings
+.vscode/
