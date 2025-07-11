@@ -1,6 +1,6 @@
 langchain
 langchain-community
-langchain-google-genai
+langchain-groq
 sentence-transformers
 faiss-cpu
 PyMuPDF
