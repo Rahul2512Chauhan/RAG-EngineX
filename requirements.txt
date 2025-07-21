@@ -1,0 +1,10 @@
+# Core dependencies
+python-dotenv
+faiss-cpu
+sentence-transformers
+
+# Gemini (via Google Generative AI)
+google-generativeai
+
+# LangChain (for pipeline support, not langchain-community)
+langchain>=0.2.1

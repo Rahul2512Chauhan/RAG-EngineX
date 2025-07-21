@@ -1,0 +1,29 @@
+.env
+chunks.pkl
+index.faiss
+.DS_Store
+__pycache__/
+docs
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE/Editor files
+.vscode/ # VS Code
+
+
+# Environment variables
+.env
+
+# OS generated files
+.DS_Store # macOS
+
+# Logs and temporary files
+*.log
+*.tmp
