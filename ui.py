@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from rag_enginex import loader, chunker, embedder, vector_store, llm_answer
+from rag_enginex import pipeline  # calling centralized pipeline logic
 
 # Page config
 st.set_page_config(page_title="🧠 RAG-EngineX", layout="wide")
@@ -23,16 +23,17 @@ with st.sidebar:
     chunk_size = st.slider("🔪 Chunk Size", 100, 2000, 800, step=100)
     chunk_overlap = st.slider("🔁 Chunk Overlap", 0, 500, 100, step=50)
     top_k = st.slider("📚 Top K Chunks", 1, 10, 5)
+    rerank_top_n = st.slider("🎯 Top N After Rerank", 1, top_k, 3)
     st.markdown("---")
     st.caption("Made with ❤️ for AI internships and beyond.")
 
 # State setup
 if "chunks" not in st.session_state:
     st.session_state.chunks = []
-if "embedder" not in st.session_state:
-    st.session_state.embedder = embedder.BGEEmbedder()
 if "vector_store" not in st.session_state:
     st.session_state.vector_store = None
+if "embedder" not in st.session_state:
+    st.session_state.embedder = None
 
 # Two-column layout
 left, right = st.columns([1, 2])
@@ -46,17 +47,15 @@ with left:
             with open("temp.pdf", "wb") as f:
                 f.write(uploaded_pdf.read())
 
-            text = loader.load_pdf_text("temp.pdf")
-            chunks = chunker.chunk_text(text, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+            # 🔁 Process PDF via pipeline
+            chunks, embeddings, db, embed_model = pipeline.process_pdf(
+                "temp.pdf",
+                chunk_size=chunk_size,
+                chunk_overlap=chunk_overlap
+            )
             st.session_state.chunks = chunks
-
-            # Embed & Index
-            embedding_model = st.session_state.embedder
-            embeddings = embedding_model.embed_chunks(chunks)
-
-            db = vector_store.FAISSVectorestore(dim=len(embeddings[0]))
-            db.add_embeddings(embeddings, chunks)
             st.session_state.vector_store = db
+            st.session_state.embedder = embed_model
 
         st.success(f"✅ {len(chunks)} chunks embedded and indexed!")
 
@@ -74,20 +73,22 @@ with right:
         elif not st.session_state.vector_store:
             st.error("Upload and process a PDF before asking.")
         else:
-            with st.spinner("🔍 Retrieving chunks..."):
-                query_vector = st.session_state.embedder.embed_chunks([question])[0]
-                results = st.session_state.vector_store.search(query_vector, top_k=top_k)
-                context_chunks = [chunk for chunk, _ in results]
-
-            with st.spinner("🤖 Generating Answer..."):
-                final_answer = llm_answer.generate_answer(question, context_chunks)
+            with st.spinner("🧠 Thinking..."):
+                # 🔁 Full query pipeline
+                answer, reranked_chunks = pipeline.process_query(
+                    question,
+                    st.session_state.vector_store,
+                    st.session_state.embedder,
+                    top_k=top_k,
+                    rerank_top_n=rerank_top_n
+                )
 
             st.success("✅ Answer generated!")
             st.markdown("### 📢 Answer")
-            st.markdown(final_answer)
+            st.markdown(answer)
 
-            with st.expander("📚 Retrieved Context Chunks"):
-                for i, chunk in enumerate(context_chunks):
+            with st.expander("📚 Reranked Context Chunks Used"):
+                for i, chunk in enumerate(reranked_chunks):
                     st.markdown(f"**Chunk {i+1}:** {chunk[:400]}...")
 
 st.markdown("---")
