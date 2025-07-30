@@ -1,23 +1,24 @@
 import os
 from typing import List
 from dotenv import load_dotenv
+from pydantic import SecretStr
 
 from langchain_core.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
-from pydantic import SecretStr
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from langchain_openai import ChatOpenAI  # Groq-compatible wrapper
 
-# === Load Gemini API Key ===
+# === Load API Key ===
 load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in environment variables.")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY not found in environment variables.")
 
-# === LangChain Gemini Model ===
-gemini_llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
-    api_key=SecretStr(GEMINI_API_KEY), 
+# === LangChain LLM (Groq using OpenAI-compatible endpoint) ===
+groq_llm = ChatOpenAI(
+    model="llama3-8b-8192",
+    api_key=SecretStr(GROQ_API_KEY),
+    base_url="https://api.groq.com/openai/v1",
     temperature=0.2
 )
 
@@ -37,11 +38,11 @@ Question:
 Answer:"""
 )
 
-# === LangChain RAG Chain (for Gemini) ===
-gemini_rag_chain = (
+# === LangChain RAG Chain (Groq) ===
+groq_rag_chain = (
     RunnablePassthrough.assign(context=lambda x: "\n\n".join(x["context_chunks"]))
     | prompt_template
-    | gemini_llm
+    | groq_llm
     | StrOutputParser()
 )
 
@@ -49,7 +50,7 @@ gemini_rag_chain = (
 def generate_answer(
     question: str,
     context_chunks: List[str],
-    llm_provider: str = "gemini"
+    llm_provider: str = "groq"
 ) -> str:
     """
     Generates an answer to the question using RAG (retrieved chunks).
@@ -58,45 +59,40 @@ def generate_answer(
     Parameters:
         question (str): User query
         context_chunks (List[str]): Retrieved text chunks
-        llm_provider (str): One of "gemini" or "groq"
+        llm_provider (str): Only 'groq' is supported in this version
 
     Returns:
         str: Final answer string
     """
+    if llm_provider != "groq":
+        raise ValueError(f"[generate_answer] Unsupported LLM provider: {llm_provider}")
 
-    # Ensure chunks are clean strings
     cleaned_chunks = [str(chunk) for chunk in context_chunks]
 
-    if llm_provider == "gemini":
+    try:
+        rag_answer = groq_rag_chain.invoke({
+            "context_chunks": cleaned_chunks,
+            "question": question
+        }).strip()
+    except Exception as e:
+        return f"[LangChain Groq Error] {str(e)}"
+
+    fallback_triggers = [
+        "not available in the provided context",
+        "does not contain information",
+        "cannot answer using only the context",
+        "insufficient context",
+        "based on the context, I cannot",
+    ]
+
+    if any(trigger in rag_answer.lower() for trigger in fallback_triggers):
+        print("⚠️ Insufficient context — falling back to Groq model's own knowledge...")
         try:
-            # Step 1: Try context-based RAG
-            rag_answer = gemini_rag_chain.invoke({
-                "context_chunks": cleaned_chunks,
-                "question": question
-            }).strip()
+            fallback_response = groq_llm.invoke(
+                f"Answer the following question using your own knowledge:\n\n{question}"
+            )
+            return fallback_response.strip()  # type: ignore
         except Exception as e:
-            return f"[LangChain Gemini Error] {str(e)}"
+            return f"[Groq Direct Error] {str(e)}"
 
-        # Step 2: Fallback detection
-        fallback_triggers = [
-            "not available in the provided context",
-            "does not contain information",
-            "cannot answer using only the context",
-            "insufficient context",
-            "based on the context, I cannot",
-        ]
-
-        if any(trigger in rag_answer.lower() for trigger in fallback_triggers):
-            print("⚠️ Insufficient context — falling back to Gemini's own knowledge...")
-            try:
-                fallback_response = gemini_llm.invoke(
-                    f"Answer the following question using your own knowledge:\n\n{question}"
-                )
-                return fallback_response.strip()  # type: ignore
-            except Exception as e:
-                return f"[Gemini Direct Error] {str(e)}"
-
-        return rag_answer
-
-    else:
-        raise ValueError(f"[generate_answer] Unsupported LLM provider: {llm_provider}")
+    return rag_answer

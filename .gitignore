@@ -28,3 +28,6 @@ env/
 *.log
 *.tmp
 ui.py
+
+ragx
+rag_enginex/test.py

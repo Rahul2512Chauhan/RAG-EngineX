@@ -8,3 +8,5 @@ google-generativeai
 
 # LangChain (for pipeline support, not langchain-community)
 langchain>=0.2.1
+langchain-openai
+pydantic
