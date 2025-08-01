@@ -1,4 +1,5 @@
 [server]
 headless = true
-port = 10000
+port = $PORT
 enableCORS = false
+enableXsrfProtection = false  # Optional: to silence that warning
