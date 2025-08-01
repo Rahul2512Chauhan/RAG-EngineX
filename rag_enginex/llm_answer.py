@@ -7,10 +7,11 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI  # Groq-compatible wrapper
+import streamlit as st
 
 # === Load API Key ===
 load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 if not GROQ_API_KEY:
     raise ValueError("GROQ_API_KEY not found in environment variables.")
 
