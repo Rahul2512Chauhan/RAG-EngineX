@@ -13,7 +13,6 @@ pymupdf==1.23.22
 
 # Reranking and Transformers
 transformers==4.40.2
-torch==2.2.2
 accelerate==0.29.3
 
 # Evaluation Tools
