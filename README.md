@@ -7,6 +7,7 @@
 ## 🚀 Demo
 
 🔗 **[Live Demo](https://your-deployed-url.com)** (replace with actual Render/Streamlit link)  
+
 🎥 **[Watch Walkthrough](https://your-demo-video-link.com)** (replace with video link)
 
 ---
@@ -39,39 +40,62 @@
 
 RAG-EngineX follows a modular pipeline from loading documents to evaluating responses, with each component decoupled for full flexibility.
 
-### 🔍 LangSmith Tracing
-LangSmith integration enables detailed observability of each RAG step, capturing inputs, outputs, latency, and metadata.
+### 1️⃣ 📌 High-Level Pipeline Overview
 
-![LangSmith Integration](./assets/LangSmith.png)
+Shows the flow of a document through the complete RAG-EngineX pipeline:
 
----
+![Pipeline Overview](./assets/pipeline_overview.png)
 
-### 🔁 Reranker Module
-After vector similarity search, a reranker (cross-encoder) reorders retrieved chunks based on semantic relevance.
-
-![Reranker Architecture](./assets/Reranker.png)
 
 ---
 
-### 📊 Evaluation Metrics
-Evaluate answer quality using multiple metrics:
-- **Faithfulness**: Measures hallucination.
-- **Relevance**: Measures contextual alignment.
-- **ARES**: Embedding-based answer-scoring technique.
+### 2️⃣ 🤖 Reranker Subsystem
+
+The reranker improves retrieval quality using a BGE cross-encoder before passing results to the LLM:
+
+![Reranker Architecture](./assets/reranker_architecture.png)
+
+---
+
+### 3️⃣ 📊 LangSmith + Evaluation Module
+
+Traces and evaluates generated answers using LangSmith and in-app scoring (ARES / Relevance / Faithfulness):
+
+![LangSmith Evaluation](./assets/langsmith_evaluation.png)
+
+---
+
+## 🖼 UI & Screenshots
+
+The Streamlit UI is designed for interactivity and insight. It shows answers, sources, evaluation metrics, and supports exporting results.
+
+### 🔍 LangSmith Trace Viewer
+
+![LangSmith Trace](./assets/LangSmith.png)
+
+---
+
+### 📈 Evaluation Metrics View (ARES / Relevance / Faithfulness)
 
 ![Evaluation Metrics](./assets/Evaluation%20Metrices.png)
 
 ---
 
-### 💻 Streamlit UI
-A simple and elegant frontend to enter queries, inspect retrieved contexts, view answers, examine evaluation metrics, and export results.
+### 🧠 Reranker Comparison View
+
+![Reranker Screenshot](./assets/Reranker.png)
+
+---
+
+### 🖥️ Main Streamlit App UI
 
 ![Streamlit UI](./assets/UI.png)
+
 
 ---
 
 ## ⚙️ Tech Stack
-![alt text](image.png)
+![Tech Stack](./assets/tech_stack.png)
 ---
 
 ## 📁 Project Structure
@@ -101,6 +125,9 @@ rag-enginex/
   ├── Reranker.png
   ├── Evaluation Metrices.png
   └── UI.png
+  ├── pipeline_overview.png
+  └── reranker_architecture.png
+  └── langsmith_evaluation.png
 
 
 
