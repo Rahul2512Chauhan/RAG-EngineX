@@ -6,9 +6,13 @@
 
 ## 🚀 Demo
 
-🔗 **[Live Demo](https://your-deployed-url.com)** (replace with actual Render/Streamlit link)  
+🔗 **Try it now:** [👉 RAG-EngineX on Render](https://rag-enginex.onrender.com)
 
-🎥 **[Watch Walkthrough](https://your-demo-video-link.com)** (replace with video link)
+
+🎥 **Watch Walkthrough Video (2 min)**  
+
+
+[![Watch the demo](./assets/UI.png)](https://www.loom.com/share/d76911e2d84440f58a7032df410bd317?sid=aef04d04-d16d-4145-9a58-52944d53fc6c)
 
 ---
 
@@ -98,61 +102,66 @@ The Streamlit UI is designed for interactivity and insight. It shows answers, so
 ![Tech Stack](./assets/tech_stack.png)
 ---
 
+```
 ## 📁 Project Structure
 
 rag-enginex/
 │
-├── rag_enginex/ # Core pipeline logic
-│ ├── loader.py # Document loading
-│ ├── chunker.py # Chunking logic
-│ ├── embedder.py # Embedding generation
-│ ├── vector_store.py # Vector DB interaction
-│ ├── reranker.py # Cross-encoder reranker
-│ ├── llm_answer.py # LLM query and generation
-│ ├── evaluator.py # Automated eval (ARES etc.)
-│ ├── evaluator_manual.py # Manual scoring 
-│ ├── llm_wrapper.py # LLM abstraction
-│ └── pipeline.py # Orchestrates entire flow
+├── rag_enginex/             # Core pipeline logic
+│   ├── loader.py            # Document loading
+│   ├── chunker.py           # Chunking logic
+│   ├── embedder.py          # Embedding generation
+│   ├── vector_store.py      # Vector DB interaction
+│   ├── reranker.py          # Cross-encoder reranker
+│   ├── llm_answer.py        # LLM query and generation
+│   ├── evaluator.py         # Automated eval (ARES etc.)
+│   ├── evaluator_manual.py  # Manual scoring 
+│   ├── llm_wrapper.py       # LLM abstraction
+│   └── pipeline.py          # Orchestrates entire flow
 │
-├── ui.py # Streamlit UI
-├── requirements.txt # Python dependencies
-├── runtime.txt # Python version for Render
-├── Procfile # Web server entry point
+├── ui.py                    # Streamlit UI
+├── requirements.txt         # Python dependencies
+├── runtime.txt              # Python version for Render
+├── Procfile                 # Web server entry point
 ├── .streamlit/
-│ └── config.toml # Theme and server settings
+│   └── config.toml          # Theme and server settings
 └── assets/
-  ├── LangSmith.png
-  ├── Reranker.png
-  ├── Evaluation Metrices.png
-  └── UI.png
-  ├── pipeline_overview.png
-  └── reranker_architecture.png
-  └── langsmith_evaluation.png
+    ├── LangSmith.png
+    ├── Reranker.png
+    ├── Evaluation Metrices.png
+    ├── UI.png
+    ├── pipeline_overview.png
+    ├── reranker_architecture.png
+    ├── langsmith_evaluation.png
+    └── tech_stack.png
 
+```
 
 
 ---
-
+```
 ## 🛠️ Setup & Deployment
 
 ### 🔧 Local Development
 
-```bash
 
-# 1. Clone the repo
+
+ 1. Clone the repo
 git clone https://github.com/yourusername/rag-enginex.git
 cd rag-enginex
 
-# 2. Create a virtual environment
+ 2. Create a virtual environment
 python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 
-# 3. Install dependencies
+ 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run locally
+ 4. Run locally
 streamlit run ui.py
+```
 
+```
 🚀 Deployment on Render.com
 
 Full guide available here: Deploying RAG-EngineX to Render
@@ -176,7 +185,9 @@ Add Procfile with:
     web: streamlit run ui.py --server.port $PORT
 
 (Optional) Set up .streamlit/config.toml to customize theme.
+```
 
+```
 📤 Export & Evaluation Features:
 
     ✅ Faithfulness and relevance scores shown in collapsible sections.
@@ -184,7 +195,8 @@ Add Procfile with:
     ✅ Evaluation results (JSON/CSV) downloadable via UI.
 
     ✅ Easily switch between auto-eval and manual evaluation.
-
+```
+```
 ✍️ Blogs & Write-ups
 📘 Coming Soon on Hashnode
 
@@ -193,13 +205,16 @@ Add Procfile with:
     “How to Evaluate RAG Systems Without OpenAI”
 
     “Streamlit + LangChain: Perfect UI for Document QA”
-
+```
+```
 🤝 Contributing
     Contributions are welcome! Feel free to submit issues or pull requests.
-
+```
+```
 📜 License
     MIT License © Rahul Chauhan
-
+```
+```
 🙌 Acknowledgments
     LangChain for modular building blocks
 
@@ -208,15 +223,14 @@ Add Procfile with:
     HuggingFace & Sentence-Transformers for embeddings
 
     Papers like ARES & RAGAS for evaluation inspiration
-
+```
 ---
 
 ---
 
-✅ **Next Steps (optional)**:
+✅ Next Steps (optional):
 - I can save this as `README.md` and export it for your GitHub.
 - Help you write the Render deployment guide mentioned above.
 - Help you turn this into a blog post on Hashnode.
 
-Would you like me to generate the actual `README.md` file for download now?
 
